@@ -1,6 +1,6 @@
 {
   "name": "@webpart/env",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "与自定义环境相关的文件检测与过滤功能。",
   "main": "index.js",
   "scripts": {},
@@ -13,6 +13,7 @@
     "url": "https://github.com/web-part/env.git"
   },
   "dependencies": {
-    
+    "@definejs/patterns": "^1.0.2",
+    "@definejs/string": "^1.0.0"
   }
 }
