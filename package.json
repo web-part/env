@@ -1,0 +1,18 @@
+{
+  "name": "@webpart/env",
+  "version": "1.0.0",
+  "description": "与自定义环境相关的文件检测与过滤功能。",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "micty",
+  "email": "mictydeng@qq.com",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/web-part/env.git"
+  },
+  "dependencies": {
+    
+  }
+}
