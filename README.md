@@ -21,12 +21,16 @@ let env = new Env('dev', {
     ],
 });
 
-//获取指定文件所属的环境名。
-//返回 'prd';
-env.check('htdocs/config.env.prd.js'); 
+//获取当前环境的名称。
+//返回 `dev`。
+env.get();
 
-//返回 '';
-env.check('htdocs/hello.js'); 
+//获取指定文件所属的环境名。
+//返回 'prd'。
+env.get('htdocs/config.env.prd.js'); 
+
+//返回 ''。
+env.get('htdocs/hello.js'); 
 
 let files = env.filter([
     'htdocs/test.env.dev.js',

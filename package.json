@@ -1,6 +1,6 @@
 {
   "name": "@webpart/env",
-  "version": "1.0.1",
+  "version": "2.1.2",
   "description": "与自定义环境相关的文件检测与过滤功能。",
   "main": "index.js",
   "scripts": {},

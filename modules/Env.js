@@ -13,7 +13,29 @@ const mapper = new Map();
 
 
 class Env {
+
+    /**
+    * 构造器。
+    * 已重载 Env(name$patterns);        
+    * 已重载 Env(name, name$patterns);
+    * @param {string} name 当前环境的名称。
+    *   可以为空，如果非空，则必须为 name$patterns 中的一个。
+    * @param {Object} name$patterns 不同环境对应的文件模式列表。
+    */
     constructor(name, name$patterns) {
+        //重载 Env(name$patterns);
+        if (typeof name == 'object') {
+            name$patterns = name;
+            name = '';
+        }
+
+        let valid = !name || name in name$patterns; //允许为空串。
+
+        if (!valid) {
+            throw new Error(`name$patterns 中不存在名为 ${name} 的节点。`);
+        }
+
+
         let meta = {
             'name': name,           //当前环境名称。
             'list': [],             //item = { name, patterns, };
@@ -32,20 +54,43 @@ class Env {
 
         mapper.set(this, meta);
 
-        Object.assign(this, {
-            'name': meta.name,
-        });
-
     }
 
     /**
-    * 检测指定的文件所属的环境名称。
-    * @param {string} file 必选，要检测的文件路径。
+    * 设置当前环境的名称。
+    * @param {string} name 要设置为当前环境的名称。
+    * 可以为空，如果非空，则必须为 name$patterns 中的一个。
+    */
+    set(name) {
+        let meta = mapper.get(this);
+        let valid = !name || name in meta.name$patterns; //允许为空串。
+
+        if (!valid) {
+            throw new Error(`当前实例中不存在名为 ${name} 的节点。`);
+        }
+
+        meta.name = name;
+    }
+
+    has(name) {
+        let meta = mapper.get(this);
+        return name in meta.name$patterns;
+    }
+
+    /**
+    * 获取指定的文件所属的环境名称。
+    * 或者获取当前环境的名称。
+    * @param {string} file 可选，要检测的文件路径。
     * @returns {string} 返回被检测文件所属的环境名称。
     *   如果不属于任何环境，则返回空字符串。
+    *   如果不指定参数 file，则返回当前环境的名称。
     */
-    check(file) {
+    get(file) {
         let meta = mapper.get(this);
+
+        if (!file) {
+            return meta.name;
+        }
 
         let item = meta.list.find((item) => {
             //后缀名，不包括 `.`，如 `js`。
@@ -63,6 +108,19 @@ class Env {
     }
 
     /**
+    * 检测指定文件能否在当前环境下使用（保留）。
+    * @param {string} file 可选，要检测的文件路径。
+    * @returns {boolean} 如果被检测的文件能用于当前环境，则返回 true；否则返回 false。
+    *   如果当前环境名未设置，或文件符合当前环境，则返回 true。
+    */
+    check(file) {
+        let meta = mapper.get(this);
+        let name = this.get(file);
+
+        return !name || name == meta.name;
+    }
+
+    /**
     * 过滤出符合当前环境的文件列表。
     * @param {Array} files 要进行过滤的文件列表。
     * @returns 
@@ -76,8 +134,7 @@ class Env {
         }
 
         files = files.filter(function (file) {
-            let name = meta.this.check(file);
-            return !name || name == meta.name;
+            return meta.this.check(file);
         });
 
         return files;
@@ -109,7 +166,7 @@ class Env {
         });
 
         files.forEach((file) => {
-            let name = meta.this.check(file);
+            let name = meta.this.get(file);
 
             //不属于任何环境。
             if (!name) {
